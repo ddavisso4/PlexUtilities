@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Microsoft.Win32.TaskScheduler;
 
 namespace Ddavisso4.PlexUtilities.Api
 {
@@ -34,7 +35,42 @@ namespace Ddavisso4.PlexUtilities.Api
                 .Min()
                 .ToLocalTime();
 
+            CreateOrUpdateScheduledTask(nextRecordingStartTime);
+
             return nextRecordingStartTime;
+        }
+
+        private void CreateOrUpdateScheduledTask(DateTimeOffset nextRecordingStartTime)
+        {
+            const string WakeTaskName = "Auto-Wake for Recording";
+            const string PlexUtilitesTaskFolderName = "PlexUtilities";
+
+            using (TaskService taskService = new TaskService())
+            {
+                Task wakeTask = taskService.FindTask(WakeTaskName);
+
+                if (wakeTask == null)
+                {
+                    // Create a new task definition and assign properties
+                    TaskDefinition taskDefinition = taskService.NewTask();
+                    taskDefinition.RegistrationInfo.Description = "Wakes up the computer so that it can record a show.";
+                    taskDefinition.Triggers.Add(new TimeTrigger(nextRecordingStartTime.DateTime));
+                    taskDefinition.Actions.Add(new ExecAction("cmd.exe", "/c \"exit\""));
+                    taskDefinition.Settings.WakeToRun = true;
+                    taskDefinition.Settings.MultipleInstances = TaskInstancesPolicy.IgnoreNew;
+
+                    TaskFolder taskFolder = taskService.RootFolder.SubFolders
+                        .Where(f => f.Name == PlexUtilitesTaskFolderName)
+                        .SingleOrDefault();
+
+                    if (taskFolder == null)
+                    {
+                        taskFolder = taskService.RootFolder.CreateFolder(PlexUtilitesTaskFolderName);
+                    }
+
+                    taskFolder.RegisterTaskDefinition(taskFolder.Path, taskDefinition);
+                }
+            }
         }
     }
 }
