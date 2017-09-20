@@ -36,18 +36,26 @@ namespace Ddavisso4.PlexUtilities.Api
         protected XDocument SendRequest()
         {
             HttpWebRequest request = HttpWebRequest.CreateHttp(_requestUriBuilder.Uri);
-            WebResponse response = request.GetResponse();
+            request.Timeout = (int)TimeSpan.FromSeconds(3).TotalMilliseconds;
 
-            Stream responseStream = response.GetResponseStream();
-
-            if (responseStream.CanRead)
+            try
             {
-                using (StreamReader streamReader = new StreamReader(responseStream))
+                WebResponse response = request.GetResponse();
+                Stream responseStream = response.GetResponseStream();
+
+                if (responseStream.CanRead)
                 {
-                    string responseString = streamReader.ReadToEnd();
-                    XDocument xDocument = XDocument.Parse(responseString);
-                    return xDocument;
+                    using (StreamReader streamReader = new StreamReader(responseStream))
+                    {
+                        string responseString = streamReader.ReadToEnd();
+                        XDocument xDocument = XDocument.Parse(responseString);
+                        return xDocument;
+                    }
                 }
+            }
+            catch (WebException)
+            {
+                Console.WriteLine("Error connecting to Plex server.");
             }
 
             return null;

@@ -1,5 +1,4 @@
-﻿using System;
-using Ddavisso4.PlexUtilities.Api;
+﻿using Ddavisso4.PlexUtilities.Api;
 using Ddavisso4.PlexUtilities.Args;
 using Ddavisso4.PlexUtilities.Configuration;
 using Ddavisso4.PlexUtilities.PowerManagement;
@@ -29,8 +28,6 @@ namespace Ddavisso4.PlexUtilities
                         .CheckIfShouldSleep();
                     break;
             }
-
-            Console.ReadKey();
         }
     }
 }

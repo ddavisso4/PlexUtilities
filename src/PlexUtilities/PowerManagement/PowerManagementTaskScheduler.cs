@@ -51,8 +51,7 @@ namespace Ddavisso4.PlexUtilities.Api
                 taskFolder = taskService.RootFolder.CreateFolder(_taskSchedulerFolderName);
             }
 
-            taskFolder.RegisterTaskDefinition(taskFolder.Path, taskDefinition);
-
+            taskFolder.RegisterTaskDefinition(_sleepTaskName, taskDefinition);
         }
 
         private void CreateWakeScheduledTask(TaskService taskService)
@@ -79,7 +78,7 @@ namespace Ddavisso4.PlexUtilities.Api
                 taskFolder = taskService.RootFolder.CreateFolder(_taskSchedulerFolderName);
             }
 
-            wakeTask = taskFolder.RegisterTaskDefinition(taskFolder.Path, taskDefinition);
+            taskFolder.RegisterTaskDefinition(_wakeTaskName, taskDefinition);
         }
     }
 }

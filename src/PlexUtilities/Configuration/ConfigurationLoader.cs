@@ -41,7 +41,7 @@ namespace Ddavisso4.PlexUtilities.Configuration
                             configuration.ServerIPAddress = value;
                             break;
                         case "ServerPort":
-                            configuration.ServerPort = intValue == default(int) ? throw new Exception("ServerPort must be a number.") : intValue;
+                            configuration.ServerPort = CheckInt(intValue);
                             break;
                         case "XPlexToken":
                             configuration.XPlexToken = value;
@@ -56,6 +56,12 @@ namespace Ddavisso4.PlexUtilities.Configuration
                         case "WakeTaskName":
                             configuration.WakeTaskName = value;
                             break;
+                        case "MinutesBeforeRecordingAllowSleep":
+                            configuration.MinutesBeforeRecordingAllowSleep = CheckInt(intValue);
+                            break;
+                        case "MinutesBeforeRecordingToWake":
+                            configuration.MinutesBeforeRecordingToWake = CheckInt(intValue);
+                            break;
                     }
                 }
 
@@ -66,6 +72,11 @@ namespace Ddavisso4.PlexUtilities.Configuration
             }
 
             return configuration;
+        }
+
+        private static int CheckInt(int intValue)
+        {
+            return intValue == default(int) ? throw new Exception("ServerPort must be a number.") : intValue;
         }
     }
 }

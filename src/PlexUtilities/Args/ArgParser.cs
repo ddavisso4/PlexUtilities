@@ -17,10 +17,10 @@ namespace Ddavisso4.PlexUtilities.Args
 
             switch (args[0])
             {
-                case "setup-power-management":
+                case "SetupPowerManagement":
                     plexUtilitiesArgs.PrimaryAction = PrimaryAction.SetupPowerManagement;
                     break;
-                case "try-sleep":
+                case "TrySleep":
                     plexUtilitiesArgs.PrimaryAction = PrimaryAction.TrySleep;
                     break;
                 default:

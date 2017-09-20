@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Ddavisso4.PlexUtilities.Configuration;
@@ -18,7 +17,12 @@ namespace Ddavisso4.PlexUtilities.Api
 
         internal DateTimeOffset? GetNextRecordingStartTime()
         {
-            XDocument xDocument = GetSampleResponse(); //SendRequest();
+            XDocument xDocument = SendRequest();
+
+            if (xDocument == null)
+            {
+                return null;
+            }
 
             IEnumerable<string> beginsAtAttributeValues = xDocument.Root
                 .Descendants("Media")
@@ -37,11 +41,6 @@ namespace Ddavisso4.PlexUtilities.Api
             }
 
             return null;
-        }
-
-        private XDocument GetSampleResponse()
-        {
-            return XDocument.Parse(File.ReadAllText("C:\\Users\\ddavisson\\Desktop\\schedule_response.xml"));
         }
     }
 }
