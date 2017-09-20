@@ -2,21 +2,34 @@
 using Ddavisso4.PlexUtilities.Api;
 using Ddavisso4.PlexUtilities.Args;
 using Ddavisso4.PlexUtilities.Configuration;
+using Ddavisso4.PlexUtilities.PowerManagement;
 
-namespace PlexUtilities
+namespace Ddavisso4.PlexUtilities
 {
     class Program
     {
         static void Main(string[] args)
         {
-            PlexUtilitiesArgs parsedArgs = ArgParser.ParseArgs(args);
+            PlexUtilitiesArgs plexUtilitiesArgs = ArgParser.ParseArgs(args);
             PlexUtilitiesConfiguration configuration = ConfigurationLoader.LoadConfiguration();
 
-            PlexApiClient apiClient = new PlexApiClient(configuration.ServerIPAddress, configuration.ServerPort, configuration.XPlexToken);
+            if (plexUtilitiesArgs == null)
+            {
+                return;
+            }
 
-            DateTimeOffset nextRecordingTime = new RecordingScheduleClient(apiClient).CreateScheduledTaskToWakeComputerAtNextRecordingTime();
+            switch (plexUtilitiesArgs.PrimaryAction)
+            {
+                case PrimaryAction.SetupPowerManagement:
+                    new PowerManagementTaskScheduler(configuration)
+                        .SetupPowerManagementTasks();
+                    break;
+                case PrimaryAction.TrySleep:
+                    new SleepChecker(configuration)
+                        .CheckIfShouldSleep();
+                    break;
+            }
 
-            Console.WriteLine(nextRecordingTime);
             Console.ReadKey();
         }
     }

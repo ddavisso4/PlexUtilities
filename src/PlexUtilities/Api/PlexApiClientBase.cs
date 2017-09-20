@@ -3,19 +3,29 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Web;
+using System.Xml.Linq;
+using Ddavisso4.PlexUtilities.Configuration;
 
 namespace Ddavisso4.PlexUtilities.Api
 {
-    internal class PlexApiClient
+    internal abstract class PlexApiClientBase
     {
         private readonly UriBuilder _requestUriBuilder;
 
-        internal PlexApiClient(string serverIpAddress, int serverPort, string xPlexToken)
+        protected abstract string PlexFeatureUrl { get; }
+
+        internal PlexApiClientBase(PlexUtilitiesConfiguration configuration)
+            : this(configuration.ServerIPAddress, configuration.ServerPort, configuration.XPlexToken)
+        {
+        }
+
+        internal PlexApiClientBase(string serverIpAddress, int serverPort, string xPlexToken)
         {
             _requestUriBuilder = new UriBuilder();
             _requestUriBuilder.Scheme = "http";
             _requestUriBuilder.Host = serverIpAddress;
             _requestUriBuilder.Port = serverPort;
+            _requestUriBuilder.Path = PlexFeatureUrl;
 
             NameValueCollection queryStringBuilder = HttpUtility.ParseQueryString(string.Empty);
             queryStringBuilder["X-Plex-Token"] = xPlexToken;
@@ -23,10 +33,8 @@ namespace Ddavisso4.PlexUtilities.Api
             _requestUriBuilder.Query = queryStringBuilder.ToString();
         }
 
-        internal string SendRequest(string plexUrl)
+        protected XDocument SendRequest()
         {
-            _requestUriBuilder.Path = plexUrl;
-
             HttpWebRequest request = HttpWebRequest.CreateHttp(_requestUriBuilder.Uri);
             WebResponse response = request.GetResponse();
 
@@ -36,7 +44,9 @@ namespace Ddavisso4.PlexUtilities.Api
             {
                 using (StreamReader streamReader = new StreamReader(responseStream))
                 {
-                    return streamReader.ReadToEnd();
+                    string responseString = streamReader.ReadToEnd();
+                    XDocument xDocument = XDocument.Parse(responseString);
+                    return xDocument;
                 }
             }
 

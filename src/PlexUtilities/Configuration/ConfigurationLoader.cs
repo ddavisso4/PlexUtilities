@@ -17,7 +17,7 @@ namespace Ddavisso4.PlexUtilities.Configuration
             if (File.Exists(settingsFileLocation))
             {
                 string settingsString = File.ReadAllText(settingsFileLocation, Encoding.ASCII);
-                string[] configurationLines = settingsString.Split(Environment.NewLine);
+                string[] configurationLines = settingsString.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
                 bool xPlexTokenFound = false;
 
                 foreach (string configurationLine in configurationLines)
@@ -46,6 +46,15 @@ namespace Ddavisso4.PlexUtilities.Configuration
                         case "XPlexToken":
                             configuration.XPlexToken = value;
                             xPlexTokenFound = true;
+                            break;
+                        case "TaskSchedulerFolderName":
+                            configuration.TaskSchedulerFolderName = value;
+                            break;
+                        case "SleepTaskName":
+                            configuration.SleepTaskName = value;
+                            break;
+                        case "WakeTaskName":
+                            configuration.WakeTaskName = value;
                             break;
                     }
                 }

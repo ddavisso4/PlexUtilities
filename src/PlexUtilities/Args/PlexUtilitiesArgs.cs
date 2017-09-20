@@ -2,6 +2,6 @@
 {
     internal class PlexUtilitiesArgs
     {
-        public bool SetupWakeEvent { get; set; }
+        public PrimaryAction PrimaryAction { get; set; }
     }
 }
