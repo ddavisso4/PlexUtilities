@@ -46,6 +46,7 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
                     wakeTask.RegisterChanges();
                 }
 
+                // Task doesn't seem to get updated if we sleep to quickly.
                 Thread.Sleep((int)TimeSpan.FromSeconds(2).TotalMilliseconds);
                 Sleep();
             }
@@ -53,7 +54,7 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
 
         private void Sleep()
         {
-            //SetSuspendState(false, true, true);
+            SetSuspendState(false, true, true);
         }
     }
 }

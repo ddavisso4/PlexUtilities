@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
+using Ddavisso4.PlexUtilities.Args;
 using Ddavisso4.PlexUtilities.Configuration;
 using Microsoft.Win32.TaskScheduler;
 
@@ -39,7 +40,7 @@ namespace Ddavisso4.PlexUtilities.Api
             TaskDefinition taskDefinition = taskService.NewTask();
             taskDefinition.RegistrationInfo.Description = "Sleeps the computer if idle and no recording upcoming.";
             taskDefinition.Triggers.Add(new IdleTrigger());
-            taskDefinition.Actions.Add(new ExecAction(Assembly.GetExecutingAssembly().Location, "try-sleep"));
+            taskDefinition.Actions.Add(new ExecAction(Assembly.GetExecutingAssembly().Location, PrimaryAction.TrySleep.ToString()));
             taskDefinition.Settings.MultipleInstances = TaskInstancesPolicy.IgnoreNew;
 
             TaskFolder taskFolder = taskService.RootFolder.SubFolders

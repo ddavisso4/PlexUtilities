@@ -34,7 +34,7 @@ namespace Ddavisso4.PlexUtilities.Args
 
         private static void WriteValidPrimaryActions()
         {
-            Console.WriteLine("Valid primary actions are:");
+            Console.WriteLine("Valid actions are:");
 
             IEnumerable<string> primaryActions = Enum.GetNames(typeof(PrimaryAction));
 
