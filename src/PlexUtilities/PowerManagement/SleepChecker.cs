@@ -27,33 +27,38 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
 
         internal void CheckIfShouldSleep()
         {
-            DateTimeOffset? nextRecordingStartTime = _recordingScheduleApiClient.GetNextRecordingStartTime();
+            RecordingScheduleApiClient.RecordingScheduleInfo scheduleInfo = _recordingScheduleApiClient.GetNextRecordingStartTime();
 
-            if (!nextRecordingStartTime.HasValue)
+            if (scheduleInfo.IsCurrentlyRecording)
+            {
+                Console.WriteLine("Currently recording.");
+                return;
+            }
+
+            if (!scheduleInfo.NextRecordingStartTime.HasValue)
             {
                 Console.WriteLine("No recording found.");
                 Sleep();
             }
-            else if (nextRecordingStartTime.Value.AddMinutes(-_minutesBeforeRecordingAllowSleep) > DateTimeOffset.UtcNow)
+            else if (scheduleInfo.NextRecordingStartTime.Value.AddMinutes(-_minutesBeforeRecordingAllowSleep) > DateTimeOffset.UtcNow)
             {
-                Console.WriteLine($"Next recording start time: {nextRecordingStartTime.Value.LocalDateTime}");
+                Console.WriteLine($"Next recording start time: {scheduleInfo.NextRecordingStartTime.Value.LocalDateTime}");
 
                 using (TaskService taskService = new TaskService())
                 {
                     Task wakeTask = taskService.FindTask(_wakeTaskName);
                     wakeTask.Definition.Triggers.Clear();
-                    wakeTask.Definition.Triggers.Add(new TimeTrigger(nextRecordingStartTime.Value.AddMinutes(-_minutesBeforeRecordingToWake).LocalDateTime));
+                    wakeTask.Definition.Triggers.Add(new TimeTrigger(scheduleInfo.NextRecordingStartTime.Value.AddMinutes(-_minutesBeforeRecordingToWake).LocalDateTime));
                     wakeTask.RegisterChanges();
                 }
 
-                // Task doesn't seem to get updated if we sleep to quickly.
-                Thread.Sleep((int)TimeSpan.FromSeconds(2).TotalMilliseconds);
                 Sleep();
             }
         }
 
         private void Sleep()
         {
+            Thread.Sleep((int)TimeSpan.FromSeconds(3).TotalMilliseconds);
             SetSuspendState(false, true, true);
         }
     }

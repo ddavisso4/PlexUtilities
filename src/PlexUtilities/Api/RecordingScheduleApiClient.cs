@@ -15,7 +15,7 @@ namespace Ddavisso4.PlexUtilities.Api
 
         protected override string PlexFeatureUrl => "media/subscriptions/scheduled";
 
-        internal DateTimeOffset? GetNextRecordingStartTime()
+        internal RecordingScheduleInfo GetNextRecordingStartTime()
         {
             XDocument xDocument = SendRequest();
 
@@ -24,23 +24,51 @@ namespace Ddavisso4.PlexUtilities.Api
                 return null;
             }
 
-            IEnumerable<string> beginsAtAttributeValues = xDocument.Root
+            IEnumerable<ScheduleData> schedules = xDocument.Root
                 .Descendants("Media")
-                .Attributes()
-                .Where(a => a.Name == "beginsAt")
-                .Select(a => a.Value)
+                .Select(m => new ScheduleData
+                {
+                    BeginsAt = ReadStringAsUnixTime(m.Attribute("beginsAt").Value),
+                    EndsAt = ReadStringAsUnixTime(m.Attribute("endsAt").Value)
+                })
                 .ToArray();
 
-            if (beginsAtAttributeValues.Any())
+            // Could do some performance improvement in here but as far as I can tell
+            // we are generally dealing with very small data sets (less than 10k).
+            if (schedules.Any())
             {
-                return beginsAtAttributeValues
-                    .Select(a => Convert.ToInt64(a))
-                    .Select(a => DateTimeOffset.FromUnixTimeSeconds(a))
-                    .Where(date => date > DateTimeOffset.UtcNow)
+                RecordingScheduleInfo recordingScheduleInfo = new RecordingScheduleInfo();
+
+                recordingScheduleInfo.IsCurrentlyRecording = schedules
+                    .Where(s => s.BeginsAt >= DateTimeOffset.UtcNow && s.EndsAt <= DateTimeOffset.UtcNow)
+                    .Any();
+
+                recordingScheduleInfo.NextRecordingStartTime = schedules
+                    .Where(s => s.BeginsAt > DateTimeOffset.UtcNow)
+                    .Select(schedule => schedule.BeginsAt)
                     .Min();
+
+                return recordingScheduleInfo;
             }
 
             return null;
+        }
+
+        private DateTimeOffset ReadStringAsUnixTime(string value)
+        {
+            return DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(value));
+        }
+
+        internal class RecordingScheduleInfo
+        {
+            internal DateTimeOffset? NextRecordingStartTime { get; set; }
+            internal bool IsCurrentlyRecording { get; set; }
+        }
+
+        private class ScheduleData
+        {
+            public DateTimeOffset BeginsAt { get; set; }
+            public DateTimeOffset EndsAt { get; set; }
         }
     }
 }
