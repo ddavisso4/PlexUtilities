@@ -40,7 +40,7 @@ namespace Ddavisso4.PlexUtilities.Api
                 RecordingScheduleInfo recordingScheduleInfo = new RecordingScheduleInfo();
 
                 recordingScheduleInfo.IsCurrentlyRecording = schedules
-                    .Where(s => s.BeginsAt >= DateTimeOffset.UtcNow && s.EndsAt <= DateTimeOffset.UtcNow)
+                    .Where(s => s.BeginsAt <= DateTimeOffset.UtcNow && s.EndsAt >= DateTimeOffset.UtcNow)
                     .Any();
 
                 recordingScheduleInfo.NextRecordingStartTime = schedules
