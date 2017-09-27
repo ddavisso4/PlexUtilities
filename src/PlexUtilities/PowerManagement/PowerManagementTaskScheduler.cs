@@ -38,6 +38,7 @@ namespace Ddavisso4.PlexUtilities.Api
             }
 
             TaskDefinition taskDefinition = taskService.NewTask();
+            taskDefinition.RegistrationInfo.Author = "PlexUtilities";
             taskDefinition.RegistrationInfo.Description = "Sleeps the computer if idle and no recording upcoming.";
             taskDefinition.Triggers.Add(new IdleTrigger());
             taskDefinition.Actions.Add(new ExecAction(Assembly.GetExecutingAssembly().Location, PrimaryAction.TrySleep.ToString()));
@@ -65,10 +66,13 @@ namespace Ddavisso4.PlexUtilities.Api
             }
 
             TaskDefinition taskDefinition = taskService.NewTask();
+            taskDefinition.RegistrationInfo.Author = "PlexUtilities";
             taskDefinition.RegistrationInfo.Description = "Wakes up the computer so that it can record a show.";
             taskDefinition.Actions.Add(new ExecAction("cmd.exe", "/c \"exit\""));
             taskDefinition.Settings.WakeToRun = true;
             taskDefinition.Settings.MultipleInstances = TaskInstancesPolicy.IgnoreNew;
+            taskDefinition.Settings.RunOnlyIfLoggedOn = false;
+            taskDefinition.Settings.DisallowStartOnRemoteAppSession = false;
 
             TaskFolder taskFolder = taskService.RootFolder.SubFolders
                 .Where(f => f.Name == _taskSchedulerFolderName)
