@@ -10,7 +10,7 @@ namespace Ddavisso4.PlexUtilities.Api
 {
     internal abstract class PlexApiClientBase
     {
-        private readonly UriBuilder _requestUriBuilder;
+        private readonly Uri _requestUri;
 
         protected abstract string PlexFeatureUrl { get; }
 
@@ -21,7 +21,7 @@ namespace Ddavisso4.PlexUtilities.Api
 
         internal PlexApiClientBase(string serverIpAddress, int serverPort, string xPlexToken)
         {
-            _requestUriBuilder = new UriBuilder();
+            UriBuilder _requestUriBuilder = new UriBuilder();
             _requestUriBuilder.Scheme = "http";
             _requestUriBuilder.Host = serverIpAddress;
             _requestUriBuilder.Port = serverPort;
@@ -31,11 +31,13 @@ namespace Ddavisso4.PlexUtilities.Api
             queryStringBuilder["X-Plex-Token"] = xPlexToken;
 
             _requestUriBuilder.Query = queryStringBuilder.ToString();
+
+            _requestUri = _requestUriBuilder.Uri;
         }
 
         protected XDocument SendRequest()
         {
-            HttpWebRequest request = HttpWebRequest.CreateHttp(_requestUriBuilder.Uri);
+            HttpWebRequest request = HttpWebRequest.CreateHttp(_requestUri);
             request.Timeout = (int)TimeSpan.FromSeconds(3).TotalMilliseconds;
 
             try
