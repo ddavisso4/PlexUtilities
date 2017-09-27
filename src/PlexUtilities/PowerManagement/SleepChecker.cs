@@ -34,6 +34,10 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
                 Console.WriteLine("Currently recording.");
                 return;
             }
+            else
+            {
+                Console.WriteLine("Not currently recording.");
+            }
 
             if (!scheduleInfo.NextRecordingStartTime.HasValue)
             {
