@@ -26,6 +26,7 @@ namespace Ddavisso4.PlexUtilities.Api
 
             IEnumerable<ScheduleData> schedules = xDocument.Root
                 .Descendants("Media")
+                .Where(x => x.Parent.Parent.Attribute("status").Value == "scheduled")
                 .Select(m => new ScheduleData
                 {
                     BeginsAt = ReadStringAsUnixTime(m.Attribute("beginsAt").Value),
@@ -54,9 +55,9 @@ namespace Ddavisso4.PlexUtilities.Api
             return null;
         }
 
-        private DateTimeOffset ReadStringAsUnixTime(string value)
+        private DateTimeOffset ReadStringAsUnixTime(string unitTimeString, string offsetInSecondsString = null)
         {
-            return DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(value));
+            return DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(unitTimeString)).AddSeconds(Convert.ToInt32(offsetInSecondsString));
         }
 
         internal class RecordingScheduleInfo

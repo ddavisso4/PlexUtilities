@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using Ddavisso4.PlexUtilities.Args;
 using Ddavisso4.PlexUtilities.Configuration;
@@ -38,11 +39,22 @@ namespace Ddavisso4.PlexUtilities.Api
             }
 
             TaskDefinition taskDefinition = taskService.NewTask();
+
             taskDefinition.RegistrationInfo.Author = "PlexUtilities";
             taskDefinition.RegistrationInfo.Description = "Sleeps the computer if idle and no recording upcoming.";
+
             taskDefinition.Triggers.Add(new IdleTrigger());
+
             taskDefinition.Actions.Add(new ExecAction(Assembly.GetExecutingAssembly().Location, PrimaryAction.TrySleep.ToString()));
+
+            taskDefinition.Settings.DisallowStartOnRemoteAppSession = false;
+            taskDefinition.Settings.IdleSettings.IdleDuration = TimeSpan.FromMinutes(10);
+            taskDefinition.Settings.IdleSettings.StopOnIdleEnd = true;
             taskDefinition.Settings.MultipleInstances = TaskInstancesPolicy.IgnoreNew;
+            taskDefinition.Settings.RunOnlyIfLoggedOn = false;
+
+            taskDefinition.Principal.LogonType = TaskLogonType.S4U;
+            taskDefinition.Principal.RunLevel = TaskRunLevel.Highest;
 
             TaskFolder taskFolder = taskService.RootFolder.SubFolders
                 .Where(f => f.Name == _taskSchedulerFolderName)
@@ -66,13 +78,19 @@ namespace Ddavisso4.PlexUtilities.Api
             }
 
             TaskDefinition taskDefinition = taskService.NewTask();
+
             taskDefinition.RegistrationInfo.Author = "PlexUtilities";
             taskDefinition.RegistrationInfo.Description = "Wakes up the computer so that it can record a show.";
+
             taskDefinition.Actions.Add(new ExecAction("cmd.exe", "/c \"exit\""));
-            taskDefinition.Settings.WakeToRun = true;
+
+            taskDefinition.Settings.DisallowStartOnRemoteAppSession = false;
             taskDefinition.Settings.MultipleInstances = TaskInstancesPolicy.IgnoreNew;
             taskDefinition.Settings.RunOnlyIfLoggedOn = false;
-            taskDefinition.Settings.DisallowStartOnRemoteAppSession = false;
+            taskDefinition.Settings.WakeToRun = true;
+
+            taskDefinition.Principal.LogonType = TaskLogonType.S4U;
+            taskDefinition.Principal.RunLevel = TaskRunLevel.Highest;
 
             TaskFolder taskFolder = taskService.RootFolder.SubFolders
                 .Where(f => f.Name == _taskSchedulerFolderName)

@@ -51,8 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\BackgroundSessionsApiClient.cs" />
     <Compile Include="Api\PlexApiClientBase.cs" />
     <Compile Include="Api\RecordingScheduleApiClient.cs" />
+    <Compile Include="Api\SessionsApiClient.cs" />
     <Compile Include="Args\ArgParser.cs" />
     <Compile Include="Args\PlexUtilitiesArgs.cs" />
     <Compile Include="Args\PrimaryAction.cs" />

@@ -10,6 +10,8 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
     internal class SleepChecker
     {
         private readonly RecordingScheduleApiClient _recordingScheduleApiClient;
+        private readonly BackgroundSessionsApiClient _backgroundSessionsApiClient;
+        private readonly SessionsApiClient _sessionsApiClient;
         private readonly string _wakeTaskName;
         private readonly int _minutesBeforeRecordingAllowSleep;
         private readonly int _minutesBeforeRecordingToWake;
@@ -17,6 +19,9 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
         public SleepChecker(PlexUtilitiesConfiguration configuration)
         {
             _recordingScheduleApiClient = new RecordingScheduleApiClient(configuration);
+            _backgroundSessionsApiClient = new BackgroundSessionsApiClient(configuration);
+            _sessionsApiClient = new SessionsApiClient(configuration);
+
             _wakeTaskName = configuration.WakeTaskName;
             _minutesBeforeRecordingAllowSleep = configuration.MinutesBeforeRecordingAllowSleep;
             _minutesBeforeRecordingToWake = configuration.MinutesBeforeRecordingToWake;
@@ -28,15 +33,13 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
         internal void CheckIfShouldSleep()
         {
             RecordingScheduleApiClient.RecordingScheduleInfo scheduleInfo = _recordingScheduleApiClient.GetNextRecordingStartTime();
+            bool areThereActiveBackgroundSessions = _backgroundSessionsApiClient.AreThereActiveBackgroundSessions();
+            bool areThereActiveSessions = _sessionsApiClient.AreThereActiveSessions();
 
-            if (scheduleInfo.IsCurrentlyRecording)
+            if (scheduleInfo.IsCurrentlyRecording || areThereActiveBackgroundSessions || areThereActiveSessions)
             {
-                Console.WriteLine("Currently recording.");
+                Console.WriteLine("Currently doing something.");
                 return;
-            }
-            else
-            {
-                Console.WriteLine("Not currently recording.");
             }
 
             if (!scheduleInfo.NextRecordingStartTime.HasValue)
