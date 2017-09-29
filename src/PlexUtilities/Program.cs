@@ -24,7 +24,7 @@ namespace Ddavisso4.PlexUtilities
                         .SetupPowerManagementTasks();
                     break;
                 case PrimaryAction.TrySleep:
-                    new SleepChecker(configuration)
+                    new TrySleeper(configuration)
                         .CheckIfShouldSleep();
                     break;
             }

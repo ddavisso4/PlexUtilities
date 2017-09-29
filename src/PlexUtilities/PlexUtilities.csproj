@@ -61,7 +61,7 @@
     <Compile Include="Configuration\ConfigurationLoader.cs" />
     <Compile Include="Configuration\PlexUtilitiesConfiguration.cs" />
     <Compile Include="PowerManagement\PowerManagementTaskScheduler.cs" />
-    <Compile Include="PowerManagement\SleepChecker.cs" />
+    <Compile Include="PowerManagement\TrySleeper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -70,6 +70,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="External\psshutdown.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="settings.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

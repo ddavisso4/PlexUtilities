@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Threading;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using Ddavisso4.PlexUtilities.Api;
 using Ddavisso4.PlexUtilities.Configuration;
 using Microsoft.Win32.TaskScheduler;
 
 namespace Ddavisso4.PlexUtilities.PowerManagement
 {
-    internal class SleepChecker
+    internal class TrySleeper
     {
         private readonly RecordingScheduleApiClient _recordingScheduleApiClient;
         private readonly BackgroundSessionsApiClient _backgroundSessionsApiClient;
@@ -16,7 +17,7 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
         private readonly int _minutesBeforeRecordingAllowSleep;
         private readonly int _minutesBeforeRecordingToWake;
 
-        public SleepChecker(PlexUtilitiesConfiguration configuration)
+        public TrySleeper(PlexUtilitiesConfiguration configuration)
         {
             _recordingScheduleApiClient = new RecordingScheduleApiClient(configuration);
             _backgroundSessionsApiClient = new BackgroundSessionsApiClient(configuration);
@@ -26,9 +27,6 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
             _minutesBeforeRecordingAllowSleep = configuration.MinutesBeforeRecordingAllowSleep;
             _minutesBeforeRecordingToWake = configuration.MinutesBeforeRecordingToWake;
         }
-
-        [DllImport("Powrprof.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        internal static extern bool SetSuspendState(bool hiberate, bool forceCritical, bool disableWakeEvent);
 
         internal void CheckIfShouldSleep()
         {
@@ -65,8 +63,9 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
 
         private void Sleep()
         {
-            Thread.Sleep((int)TimeSpan.FromSeconds(3).TotalMilliseconds);
-            SetSuspendState(false, true, true);
+            using (Process psshutdown = Process.Start(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\External\\psshutdown.exe", "-d -t 7"))
+            {
+            }
         }
     }
 }

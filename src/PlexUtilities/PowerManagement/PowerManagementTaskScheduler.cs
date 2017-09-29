@@ -47,14 +47,13 @@ namespace Ddavisso4.PlexUtilities.Api
 
             taskDefinition.Actions.Add(new ExecAction(Assembly.GetExecutingAssembly().Location, PrimaryAction.TrySleep.ToString()));
 
+            taskDefinition.Principal.LogonType = TaskLogonType.S4U;
+            taskDefinition.Principal.RunLevel = TaskRunLevel.Highest;
+
             taskDefinition.Settings.DisallowStartOnRemoteAppSession = false;
             taskDefinition.Settings.IdleSettings.IdleDuration = TimeSpan.FromMinutes(10);
             taskDefinition.Settings.IdleSettings.StopOnIdleEnd = true;
             taskDefinition.Settings.MultipleInstances = TaskInstancesPolicy.IgnoreNew;
-            taskDefinition.Settings.RunOnlyIfLoggedOn = false;
-
-            taskDefinition.Principal.LogonType = TaskLogonType.S4U;
-            taskDefinition.Principal.RunLevel = TaskRunLevel.Highest;
 
             TaskFolder taskFolder = taskService.RootFolder.SubFolders
                 .Where(f => f.Name == _taskSchedulerFolderName)
@@ -84,13 +83,12 @@ namespace Ddavisso4.PlexUtilities.Api
 
             taskDefinition.Actions.Add(new ExecAction("cmd.exe", "/c \"exit\""));
 
-            taskDefinition.Settings.DisallowStartOnRemoteAppSession = false;
-            taskDefinition.Settings.MultipleInstances = TaskInstancesPolicy.IgnoreNew;
-            taskDefinition.Settings.RunOnlyIfLoggedOn = false;
-            taskDefinition.Settings.WakeToRun = true;
-
             taskDefinition.Principal.LogonType = TaskLogonType.S4U;
             taskDefinition.Principal.RunLevel = TaskRunLevel.Highest;
+
+            taskDefinition.Settings.DisallowStartOnRemoteAppSession = false;
+            taskDefinition.Settings.MultipleInstances = TaskInstancesPolicy.IgnoreNew;
+            taskDefinition.Settings.WakeToRun = true;
 
             TaskFolder taskFolder = taskService.RootFolder.SubFolders
                 .Where(f => f.Name == _taskSchedulerFolderName)

@@ -24,15 +24,24 @@ namespace Ddavisso4.PlexUtilities.Api
                 return null;
             }
 
-            IEnumerable<ScheduleData> schedules = xDocument.Root
-                .Descendants("Media")
-                .Where(x => x.Parent.Parent.Attribute("status").Value == "scheduled")
-                .Select(m => new ScheduleData
+            IEnumerable<Show> schedules = xDocument.Root
+                .Descendants("Video")
+                .Where(x => x.Parent.Attribute("status").Value == "scheduled")
+                .Select(v => new Show
                 {
-                    BeginsAt = ReadStringAsUnixTime(m.Attribute("beginsAt").Value),
-                    EndsAt = ReadStringAsUnixTime(m.Attribute("endsAt").Value)
+                    EpisodeTitle = v.Attribute("grandparentTitle").Value,
+                    ShowTitle = v.Attribute("title").Value,
+                    ShowingToRecord = v.Elements()
+                        .Skip(Convert.ToInt32(v.Parent.Attribute("mediaIndex").Value))
+                        .Select(m => new Media
+                        {
+                            BeginsAt = ReadStringAsUnixTime(m.Attribute("beginsAt").Value),
+                            EndsAt = ReadStringAsUnixTime(m.Attribute("endsAt").Value)
+                        })
+                        .FirstOrDefault()
                 })
                 .ToArray();
+
 
             // Could do some performance improvement in here but as far as I can tell
             // we are generally dealing with very small data sets (less than 10k).
@@ -41,12 +50,12 @@ namespace Ddavisso4.PlexUtilities.Api
                 RecordingScheduleInfo recordingScheduleInfo = new RecordingScheduleInfo();
 
                 recordingScheduleInfo.IsCurrentlyRecording = schedules
-                    .Where(s => s.BeginsAt <= DateTimeOffset.UtcNow && s.EndsAt >= DateTimeOffset.UtcNow)
+                    .Where(s => s.ShowingToRecord.BeginsAt <= DateTimeOffset.UtcNow && s.ShowingToRecord.EndsAt >= DateTimeOffset.UtcNow)
                     .Any();
 
                 recordingScheduleInfo.NextRecordingStartTime = schedules
-                    .Where(s => s.BeginsAt > DateTimeOffset.UtcNow)
-                    .Select(schedule => schedule.BeginsAt)
+                    .Where(s => s.ShowingToRecord.BeginsAt > DateTimeOffset.UtcNow)
+                    .Select(schedule => schedule.ShowingToRecord.BeginsAt)
                     .Min();
 
                 return recordingScheduleInfo;
@@ -66,7 +75,14 @@ namespace Ddavisso4.PlexUtilities.Api
             internal bool IsCurrentlyRecording { get; set; }
         }
 
-        private class ScheduleData
+        private class Show
+        {
+            public string ShowTitle { get; set; }
+            public string EpisodeTitle { get; internal set; }
+            public Media ShowingToRecord { get; set; }
+        }
+
+        private class Media
         {
             public DateTimeOffset BeginsAt { get; set; }
             public DateTimeOffset EndsAt { get; set; }
