@@ -65,6 +65,7 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
         {
             using (Process psshutdown = Process.Start(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\External\\psshutdown.exe", "-d -t 7"))
             {
+                psshutdown.WaitForExit((int)TimeSpan.FromSeconds(15).TotalMilliseconds);
             }
         }
     }
