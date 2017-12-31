@@ -3,6 +3,7 @@
     internal enum PrimaryAction
     {
         SetupPowerManagement = 1,
-        TrySleep = 2
+        TrySleep = 2,
+        DownloadAlbum = 3
     }
 }

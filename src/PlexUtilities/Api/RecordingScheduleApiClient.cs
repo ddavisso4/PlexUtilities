@@ -8,7 +8,7 @@ namespace Ddavisso4.PlexUtilities.Api
 {
     internal class RecordingScheduleApiClient : PlexApiClientBase
     {
-        internal RecordingScheduleApiClient(PlexUtilitiesConfiguration configuration)
+        internal RecordingScheduleApiClient(PowerManagementConfiguration configuration)
             : base(configuration)
         {
         }

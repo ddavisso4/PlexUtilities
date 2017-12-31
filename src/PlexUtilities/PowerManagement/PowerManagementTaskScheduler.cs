@@ -13,7 +13,7 @@ namespace Ddavisso4.PlexUtilities.Api
         private readonly string _sleepTaskName;
         private readonly string _wakeTaskName;
 
-        internal PowerManagementTaskScheduler(PlexUtilitiesConfiguration configuration)
+        internal PowerManagementTaskScheduler(PowerManagementConfiguration configuration)
         {
             _taskSchedulerFolderName = configuration.TaskSchedulerFolderName;
             _sleepTaskName = configuration.SleepTaskName;

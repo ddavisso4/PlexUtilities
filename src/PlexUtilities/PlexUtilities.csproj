@@ -52,6 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\BackgroundSessionsApiClient.cs" />
+    <Compile Include="Api\PlaylistApiClient.cs" />
+    <Compile Include="Api\PlaylistsApiClient.cs" />
     <Compile Include="Api\PlexApiClientBase.cs" />
     <Compile Include="Api\RecordingScheduleApiClient.cs" />
     <Compile Include="Api\SessionsApiClient.cs" />
@@ -59,7 +61,10 @@
     <Compile Include="Args\PlexUtilitiesArgs.cs" />
     <Compile Include="Args\PrimaryAction.cs" />
     <Compile Include="Configuration\ConfigurationLoader.cs" />
+    <Compile Include="Configuration\ApiConfiguration.cs" />
     <Compile Include="Configuration\PlexUtilitiesConfiguration.cs" />
+    <Compile Include="Configuration\ServerConfiguration.cs" />
+    <Compile Include="Configuration\PowerManagementConfiguration.cs" />
     <Compile Include="PowerManagement\PowerManagementTaskScheduler.cs" />
     <Compile Include="PowerManagement\TrySleeper.cs" />
     <Compile Include="Program.cs" />
@@ -73,9 +78,9 @@
     <Content Include="External\psshutdown.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="settings.txt">
+    <None Include=".plexutilitiesconfig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

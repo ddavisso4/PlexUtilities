@@ -8,7 +8,7 @@ namespace Ddavisso4.PlexUtilities.Api
     {
         protected override string PlexFeatureUrl => "status/sessions";
 
-        internal SessionsApiClient(PlexUtilitiesConfiguration configuration) : base(configuration)
+        internal SessionsApiClient(PowerManagementConfiguration configuration) : base(configuration)
         {
         }
 

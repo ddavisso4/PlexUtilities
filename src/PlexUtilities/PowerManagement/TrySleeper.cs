@@ -17,7 +17,7 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
         private readonly int _minutesBeforeRecordingAllowSleep;
         private readonly int _minutesBeforeRecordingToWake;
 
-        public TrySleeper(PlexUtilitiesConfiguration configuration)
+        public TrySleeper(PowerManagementConfiguration configuration)
         {
             _recordingScheduleApiClient = new RecordingScheduleApiClient(configuration);
             _backgroundSessionsApiClient = new BackgroundSessionsApiClient(configuration);

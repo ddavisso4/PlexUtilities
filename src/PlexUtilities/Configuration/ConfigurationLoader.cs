@@ -7,12 +7,12 @@ namespace Ddavisso4.PlexUtilities.Configuration
 {
     internal static class ConfigurationLoader
     {
-        internal static PlexUtilitiesConfiguration LoadConfiguration()
+        internal static PowerManagementConfiguration LoadConfiguration()
         {
             PlexUtilitiesConfiguration configuration = PlexUtilitiesConfiguration.GetDefault();
 
             string assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string settingsFileLocation = Path.Combine(assemblyLocation, "settings.txt");
+            string settingsFileLocation = Path.Combine(assemblyLocation, ".plexutilitiesconfig");
 
             if (File.Exists(settingsFileLocation))
             {

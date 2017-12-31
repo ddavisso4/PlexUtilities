@@ -1,22 +1,29 @@
-﻿using Ddavisso4.PlexUtilities.Api;
+﻿using System;
+using Ddavisso4.PlexUtilities.Api;
 using Ddavisso4.PlexUtilities.Args;
 using Ddavisso4.PlexUtilities.Configuration;
 using Ddavisso4.PlexUtilities.PowerManagement;
 
 namespace Ddavisso4.PlexUtilities
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        internal static void Main(string[] args)
         {
             PlexUtilitiesArgs plexUtilitiesArgs = ArgParser.ParseArgs(args);
-            PlexUtilitiesConfiguration configuration = ConfigurationLoader.LoadConfiguration();
+            PowerManagementConfiguration configuration = ConfigurationLoader.LoadConfiguration();
 
             if (plexUtilitiesArgs == null)
             {
-                return;
+                Console.WriteLine("Plex Utilities v0");
             }
 
+            RunPrimaryAction(plexUtilitiesArgs, configuration);
+        }
+
+        private static void RunPrimaryAction(PlexUtilitiesArgs plexUtilitiesArgs, PowerManagementConfiguration configuration)
+        {
+            // TODO: GetConfig, SetConfig
             switch (plexUtilitiesArgs.PrimaryAction)
             {
                 case PrimaryAction.SetupPowerManagement:
@@ -26,6 +33,9 @@ namespace Ddavisso4.PlexUtilities
                 case PrimaryAction.TrySleep:
                     new TrySleeper(configuration)
                         .CheckIfShouldSleep();
+                    break;
+                case PrimaryAction.DownloadAlbum:
+
                     break;
             }
         }
