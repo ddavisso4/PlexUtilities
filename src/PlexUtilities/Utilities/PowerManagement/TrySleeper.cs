@@ -6,7 +6,7 @@ using Ddavisso4.PlexUtilities.Api;
 using Ddavisso4.PlexUtilities.Configuration;
 using Microsoft.Win32.TaskScheduler;
 
-namespace Ddavisso4.PlexUtilities.PowerManagement
+namespace Ddavisso4.PlexUtilities.Utilities.PowerManagement
 {
     internal class TrySleeper
     {
@@ -17,15 +17,15 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
         private readonly int _minutesBeforeRecordingAllowSleep;
         private readonly int _minutesBeforeRecordingToWake;
 
-        public TrySleeper(PowerManagementConfiguration configuration)
+        public TrySleeper(PlexUtilitiesConfiguration configuration)
         {
             _recordingScheduleApiClient = new RecordingScheduleApiClient(configuration);
             _backgroundSessionsApiClient = new BackgroundSessionsApiClient(configuration);
             _sessionsApiClient = new SessionsApiClient(configuration);
 
-            _wakeTaskName = configuration.WakeTaskName;
-            _minutesBeforeRecordingAllowSleep = configuration.MinutesBeforeRecordingAllowSleep;
-            _minutesBeforeRecordingToWake = configuration.MinutesBeforeRecordingToWake;
+            _wakeTaskName = configuration.PowerManagementConfiguration.WakeTaskName;
+            _minutesBeforeRecordingAllowSleep = configuration.PowerManagementConfiguration.MinutesBeforeRecordingAllowSleep;
+            _minutesBeforeRecordingToWake = configuration.PowerManagementConfiguration.MinutesBeforeRecordingToWake;
         }
 
         internal void CheckIfShouldSleep()

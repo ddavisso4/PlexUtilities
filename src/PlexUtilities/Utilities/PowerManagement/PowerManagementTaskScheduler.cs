@@ -5,7 +5,7 @@ using Ddavisso4.PlexUtilities.Args;
 using Ddavisso4.PlexUtilities.Configuration;
 using Microsoft.Win32.TaskScheduler;
 
-namespace Ddavisso4.PlexUtilities.Api
+namespace Ddavisso4.PlexUtilities.Utilities.PowerManagement
 {
     internal class PowerManagementTaskScheduler
     {
@@ -13,11 +13,11 @@ namespace Ddavisso4.PlexUtilities.Api
         private readonly string _sleepTaskName;
         private readonly string _wakeTaskName;
 
-        internal PowerManagementTaskScheduler(PowerManagementConfiguration configuration)
+        internal PowerManagementTaskScheduler(PlexUtilitiesConfiguration configuration)
         {
-            _taskSchedulerFolderName = configuration.TaskSchedulerFolderName;
-            _sleepTaskName = configuration.SleepTaskName;
-            _wakeTaskName = configuration.WakeTaskName;
+            _taskSchedulerFolderName = configuration.PowerManagementConfiguration.TaskSchedulerFolderName;
+            _sleepTaskName = configuration.PowerManagementConfiguration.SleepTaskName;
+            _wakeTaskName = configuration.PowerManagementConfiguration.WakeTaskName;
         }
 
         internal void SetupPowerManagementTasks()

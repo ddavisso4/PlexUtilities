@@ -8,12 +8,11 @@ namespace Ddavisso4.PlexUtilities.Api
 {
     internal class RecordingScheduleApiClient : PlexApiClientBase
     {
-        internal RecordingScheduleApiClient(PowerManagementConfiguration configuration)
-            : base(configuration)
+        internal RecordingScheduleApiClient(PlexUtilitiesConfiguration configuration) : base(configuration)
         {
         }
 
-        protected override string PlexFeatureUrl => "media/subscriptions/scheduled";
+        protected override string PlexFeatureRootUrl => "media/subscriptions/scheduled";
 
         internal RecordingScheduleInfo GetNextRecordingStartTime()
         {

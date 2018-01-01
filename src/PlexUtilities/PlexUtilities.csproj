@@ -52,12 +52,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\BackgroundSessionsApiClient.cs" />
-    <Compile Include="Api\PlaylistApiClient.cs" />
+    <Compile Include="Api\FileDownloadApiClient.cs" />
     <Compile Include="Api\PlaylistsApiClient.cs" />
     <Compile Include="Api\PlexApiClientBase.cs" />
     <Compile Include="Api\RecordingScheduleApiClient.cs" />
     <Compile Include="Api\SessionsApiClient.cs" />
     <Compile Include="Args\ArgParser.cs" />
+    <Compile Include="Args\DownloadAlbumArgs.cs" />
     <Compile Include="Args\PlexUtilitiesArgs.cs" />
     <Compile Include="Args\PrimaryAction.cs" />
     <Compile Include="Configuration\ConfigurationLoader.cs" />
@@ -65,8 +66,9 @@
     <Compile Include="Configuration\PlexUtilitiesConfiguration.cs" />
     <Compile Include="Configuration\ServerConfiguration.cs" />
     <Compile Include="Configuration\PowerManagementConfiguration.cs" />
-    <Compile Include="PowerManagement\PowerManagementTaskScheduler.cs" />
-    <Compile Include="PowerManagement\TrySleeper.cs" />
+    <Compile Include="Utilities\AlbumDownloader.cs" />
+    <Compile Include="Utilities\PowerManagement\PowerManagementTaskScheduler.cs" />
+    <Compile Include="Utilities\PowerManagement\TrySleeper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

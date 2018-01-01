@@ -11,21 +11,24 @@ namespace Ddavisso4.PlexUtilities.Api
     internal abstract class PlexApiClientBase
     {
         private readonly UriBuilder _requestUriBuilder;
+        protected abstract string PlexFeatureRootUrl { get; }
 
-        protected abstract string PlexFeatureUrl { get; }
+        internal PlexApiClientBase(PlexUtilitiesConfiguration configuration)
+            : this(configuration.ServerConfiguration, configuration.ApiConfiguration)
+        {
+        }
 
-        internal PlexApiClientBase(PowerManagementConfiguration configuration)
-            : this(configuration.ServerIPAddress, configuration.ServerPort, configuration.XPlexToken)
+        private PlexApiClientBase(ServerConfiguration serverConfiguration, ApiConfiguration apiConfiguration)
+            : this(serverConfiguration.ServerIPAddress, serverConfiguration.ServerPort, apiConfiguration.XPlexToken)
         {
         }
 
         private PlexApiClientBase(string serverIpAddress, int serverPort, string xPlexToken)
         {
-            UriBuilder _requestUriBuilder = new UriBuilder();
+            _requestUriBuilder = new UriBuilder();
             _requestUriBuilder.Scheme = "http";
             _requestUriBuilder.Host = serverIpAddress;
             _requestUriBuilder.Port = serverPort;
-            _requestUriBuilder.Path = PlexFeatureUrl;
 
             NameValueCollection queryStringBuilder = HttpUtility.ParseQueryString(string.Empty);
             queryStringBuilder["X-Plex-Token"] = xPlexToken;
@@ -35,13 +38,29 @@ namespace Ddavisso4.PlexUtilities.Api
 
         protected XDocument SendRequest()
         {
-            return SendRequest(PlexFeatureUrl);
+            _requestUriBuilder.Path = PlexFeatureRootUrl;
+            return PrivateSendRequest();
         }
 
-        protected XDocument SendRequest(string url)
+        protected XDocument SendRequest(string additionalUrl)
         {
-            _requestUriBuilder.Path = url;
+            string slash;
 
+            if (!PlexFeatureRootUrl.EndsWith("/") && !additionalUrl.StartsWith("/"))
+            {
+                slash = "/";
+            }
+            else
+            {
+                slash = string.Empty;
+            }
+
+            _requestUriBuilder.Path = string.Concat(PlexFeatureRootUrl, slash, additionalUrl);
+            return PrivateSendRequest();
+        }
+
+        private XDocument PrivateSendRequest()
+        {
             HttpWebRequest request = HttpWebRequest.CreateHttp(_requestUriBuilder.Uri);
             request.Timeout = (int)TimeSpan.FromSeconds(3).TotalMilliseconds;
 

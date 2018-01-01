@@ -6,9 +6,9 @@ namespace Ddavisso4.PlexUtilities.Api
 {
     internal class BackgroundSessionsApiClient : PlexApiClientBase
     {
-        protected override string PlexFeatureUrl => "status/sessions/background";
+        protected override string PlexFeatureRootUrl => "status/sessions/background";
 
-        internal BackgroundSessionsApiClient(PowerManagementConfiguration configuration) : base(configuration)
+        internal BackgroundSessionsApiClient(PlexUtilitiesConfiguration configuration) : base(configuration)
         {
         }
 

@@ -7,7 +7,7 @@ namespace Ddavisso4.PlexUtilities.Configuration
 {
     internal static class ConfigurationLoader
     {
-        internal static PowerManagementConfiguration LoadConfiguration()
+        internal static PlexUtilitiesConfiguration LoadConfiguration()
         {
             PlexUtilitiesConfiguration configuration = PlexUtilitiesConfiguration.GetDefault();
 
@@ -38,29 +38,29 @@ namespace Ddavisso4.PlexUtilities.Configuration
                     switch (key)
                     {
                         case "ServerIPAddress":
-                            configuration.ServerIPAddress = value;
+                            configuration.ServerConfiguration.ServerIPAddress = value;
                             break;
                         case "ServerPort":
-                            configuration.ServerPort = CheckInt(intValue);
+                            configuration.ServerConfiguration.ServerPort = CheckInt(intValue);
                             break;
                         case "XPlexToken":
-                            configuration.XPlexToken = value;
+                            configuration.ApiConfiguration.XPlexToken = value;
                             xPlexTokenFound = true;
                             break;
                         case "TaskSchedulerFolderName":
-                            configuration.TaskSchedulerFolderName = value;
+                            configuration.PowerManagementConfiguration.TaskSchedulerFolderName = value;
                             break;
                         case "SleepTaskName":
-                            configuration.SleepTaskName = value;
+                            configuration.PowerManagementConfiguration.SleepTaskName = value;
                             break;
                         case "WakeTaskName":
-                            configuration.WakeTaskName = value;
+                            configuration.PowerManagementConfiguration.WakeTaskName = value;
                             break;
                         case "MinutesBeforeRecordingAllowSleep":
-                            configuration.MinutesBeforeRecordingAllowSleep = CheckInt(intValue);
+                            configuration.PowerManagementConfiguration.MinutesBeforeRecordingAllowSleep = CheckInt(intValue);
                             break;
                         case "MinutesBeforeRecordingToWake":
-                            configuration.MinutesBeforeRecordingToWake = CheckInt(intValue);
+                            configuration.PowerManagementConfiguration.MinutesBeforeRecordingToWake = CheckInt(intValue);
                             break;
                     }
                 }

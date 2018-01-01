@@ -11,7 +11,8 @@
             return new PlexUtilitiesConfiguration
             {
                 ServerConfiguration = ServerConfiguration.GetDefault(),
-                PowerManagementConfiguration = PowerManagementConfiguration.GetDefault()
+                PowerManagementConfiguration = PowerManagementConfiguration.GetDefault(),
+                ApiConfiguration = new ApiConfiguration()
             };
         }
     }
