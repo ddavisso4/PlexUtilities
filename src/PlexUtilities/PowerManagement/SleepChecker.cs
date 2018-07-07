@@ -23,7 +23,7 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
         }
 
         [DllImport("Powrprof.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        internal static extern bool SetSuspendState(bool hiberate, bool forceCritical, bool disableWakeEvent);
+        public static extern bool SetSuspendState(bool hiberate, bool forceCritical, bool disableWakeEvent);
 
         internal void CheckIfShouldSleep()
         {
@@ -58,8 +58,9 @@ namespace Ddavisso4.PlexUtilities.PowerManagement
 
         private void Sleep()
         {
+            Console.WriteLine("Sleeping in 3 seconds...");
             Thread.Sleep((int)TimeSpan.FromSeconds(3).TotalMilliseconds);
-            SetSuspendState(false, true, true);
+            SetSuspendState(false, true, false);
         }
     }
 }
