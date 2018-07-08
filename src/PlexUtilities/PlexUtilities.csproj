@@ -77,9 +77,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="External\psshutdown.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include=".plexutilitiesconfig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

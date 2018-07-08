@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 using Ddavisso4.PlexUtilities.Api;
 using Ddavisso4.PlexUtilities.Configuration;
 using Microsoft.Win32.TaskScheduler;

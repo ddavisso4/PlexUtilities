@@ -53,8 +53,8 @@ namespace Ddavisso4.PlexUtilities.Api
                     .Any();
 
                 var futureRecordingStartDates = schedules
-                    .Where(s => s.BeginsAt > DateTimeOffset.UtcNow)
-                    .Select(schedule => schedule.BeginsAt)
+                    .Where(s => s.ShowingToRecord.BeginsAt > DateTimeOffset.UtcNow)
+                    .Select(schedule => schedule.ShowingToRecord.BeginsAt)
                     .ToArray();
 
                 if(futureRecordingStartDates.Any())
