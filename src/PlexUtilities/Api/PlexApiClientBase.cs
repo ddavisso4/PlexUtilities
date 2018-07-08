@@ -44,6 +44,24 @@ namespace Ddavisso4.PlexUtilities.Api
 
         protected XDocument SendRequest(string additionalUrl)
         {
+            SetAdditionalUrl(additionalUrl);
+            return PrivateSendRequest();
+        }
+
+        internal void DownloadFile(string additionalUrl, string fileName)
+        {
+            SetAdditionalUrl(additionalUrl);
+
+            NameValueCollection queryStringBuilder = HttpUtility.ParseQueryString(_requestUriBuilder.Query);
+            queryStringBuilder["download"] = "1";
+            _requestUriBuilder.Query = queryStringBuilder.ToString();
+
+            WebClient webClient = new WebClient();
+            webClient.DownloadFile(_requestUriBuilder.Uri, fileName);
+        }
+
+        private void SetAdditionalUrl(string additionalUrl)
+        {
             string slash;
 
             if (!PlexFeatureRootUrl.EndsWith("/") && !additionalUrl.StartsWith("/"))
@@ -56,7 +74,6 @@ namespace Ddavisso4.PlexUtilities.Api
             }
 
             _requestUriBuilder.Path = string.Concat(PlexFeatureRootUrl, slash, additionalUrl);
-            return PrivateSendRequest();
         }
 
         private XDocument PrivateSendRequest()

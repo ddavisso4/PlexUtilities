@@ -26,14 +26,31 @@ namespace Ddavisso4.PlexUtilities.Api
                 .SingleOrDefault();
         }
 
-        public IEnumerable<string> GetFilePathsForAlbumItems(int playlistID)
+        public IEnumerable<AlbumFile> GetDownloadUrlsForAlbumItems(int playlistID)
         {
             XDocument xDocument = SendRequest($"{playlistID}/items");
 
             return xDocument
-                .Descendants("Part")
-                .Select(x => x.Attribute("file").Value)
+                .Descendants("Photo")
+                .Select(x => new
+                {
+                    Photo = x,
+                    Part = x.Element("Media").Element("Part")
+                })
+                .Select(x => new AlbumFile
+                {
+                    DonwloadUrl = x.Part.Attribute("key").Value,
+                    FileName = x.Photo.Attribute("title").Value,
+                    FileExtension = x.Part.Attribute("container").Value
+                })
                 .ToArray();
+        }
+
+        public class AlbumFile
+        {
+            public string DonwloadUrl { get; set; }
+            public string FileName { get; internal set; }
+            public string FileExtension { get; set; }
         }
 
         public sealed class PlaylistType

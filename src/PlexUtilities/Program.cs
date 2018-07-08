@@ -35,7 +35,7 @@ namespace Ddavisso4.PlexUtilities
                     new TrySleeper(configuration).CheckIfShouldSleep();
                     break;
                 case PrimaryAction.DownloadAlbum:
-                    new AlbumDownloader(configuration, plexUtilitiesArgs.DownloadAlbumArgs).DownloadAlbum("Picture Frame");
+                    new AlbumDownloader(configuration, plexUtilitiesArgs.DownloadAlbumArgs).DownloadAlbum();
                     break;
             }
         }

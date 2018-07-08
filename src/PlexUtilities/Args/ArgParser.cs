@@ -33,7 +33,7 @@ namespace Ddavisso4.PlexUtilities.Args
                     break;
                 case "DownloadAlbum":
                     _plexUtilitiesArgs.PrimaryAction = PrimaryAction.DownloadAlbum;
-                    ParseDownloadAlbumDestination();
+                    ParseDownloadAlbumArgs();
                     break;
                 default:
                     WriteValidPrimaryActions();
@@ -44,27 +44,35 @@ namespace Ddavisso4.PlexUtilities.Args
             return _plexUtilitiesArgs;
         }
 
-        private bool ParseDownloadAlbumDestination()
+        private bool ParseDownloadAlbumArgs()
         {
             _plexUtilitiesArgs.DownloadAlbumArgs = new DownloadAlbumArgs();
 
-            if (_inputArgs.Length > 1)
+            if(_inputArgs.Length < 2)
+            {
+                Console.WriteLine("Album name required.");
+                return false;
+            }
+
+            _plexUtilitiesArgs.DownloadAlbumArgs.AlbumName = _inputArgs[1];
+
+            if (_inputArgs.Length > 2)
             {
                 try
                 {
-                    _plexUtilitiesArgs.DownloadAlbumArgs.DestinationDirectory = Path.GetFullPath(_inputArgs[1]);
+                    _plexUtilitiesArgs.DownloadAlbumArgs.DestinationDirectory = Path.GetFullPath(_inputArgs[2]);
                     return true;
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine($"Invalid destination directory: {_inputArgs[1]}");
+                    Console.WriteLine($"Invalid destination directory: {_inputArgs[2]}");
                     return false;
                 }
             }
             else
             {
-                Console.WriteLine("Please specify destination directory as 2nd argument.");
-                return false;
+                _plexUtilitiesArgs.DownloadAlbumArgs.DestinationDirectory = Environment.CurrentDirectory;
+                return true;
             }
         }
 

@@ -9,23 +9,29 @@ namespace Ddavisso4.PlexUtilities.Utilities
     internal class AlbumDownloader
     {
         private readonly PlaylistsApiClient _playlistsApiClient;
+        private readonly FileDownloadApiClient _fileDownloadApiClient;
         private readonly DownloadAlbumArgs _args;
 
         public AlbumDownloader(PlexUtilitiesConfiguration configuration, DownloadAlbumArgs args)
         {
             _playlistsApiClient = new PlaylistsApiClient(configuration);
+            _fileDownloadApiClient = new FileDownloadApiClient(configuration);
             _args = args;
         }
 
-        public int DownloadAlbum(string albumName)
+        public int DownloadAlbum()
         {
-            int playlistID = _playlistsApiClient.GetPlaylistIDByName(albumName);
-            IEnumerable<string> filePaths = _playlistsApiClient.GetFilePathsForAlbumItems(playlistID);
+            int playlistID = _playlistsApiClient.GetPlaylistIDByName(_args.AlbumName);
+            IEnumerable<PlaylistsApiClient.AlbumFile> albumFiles = _playlistsApiClient.GetDownloadUrlsForAlbumItems(playlistID);
 
-            // Better: https://<server>/library/parts/31699/1514218084/file.JPG?download=1&X-Plex-Token=eNmfgwb5FKSczVLXpF7i
-            foreach (string filePath in filePaths)
+            if (!Directory.Exists(_args.DestinationDirectory))
             {
-                File.Copy(filePath, _args.DestinationDirectory);
+                Directory.CreateDirectory(_args.DestinationDirectory);
+            }
+
+            foreach (PlaylistsApiClient.AlbumFile albumFile in albumFiles)
+            {
+                _fileDownloadApiClient.DownloadFile(albumFile.DonwloadUrl, $"{_args.DestinationDirectory}{Path.DirectorySeparatorChar}{albumFile.FileName}.{albumFile.FileExtension}");
             }
 
             return playlistID;
