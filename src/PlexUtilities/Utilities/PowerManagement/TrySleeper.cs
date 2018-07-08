@@ -28,6 +28,9 @@ namespace Ddavisso4.PlexUtilities.Utilities.PowerManagement
             _minutesBeforeRecordingToWake = configuration.PowerManagementConfiguration.MinutesBeforeRecordingToWake;
         }
 
+        [DllImport("Powrprof.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern bool SetSuspendState(bool hiberate, bool forceCritical, bool disableWakeEvent);
+
         internal void CheckIfShouldSleep()
         {
             RecordingScheduleApiClient.RecordingScheduleInfo scheduleInfo = _recordingScheduleApiClient.GetNextRecordingStartTime();
@@ -63,10 +66,9 @@ namespace Ddavisso4.PlexUtilities.Utilities.PowerManagement
 
         private void Sleep()
         {
-            using (Process psshutdown = Process.Start(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\External\\psshutdown.exe", "-d -t 7"))
-            {
-                psshutdown.WaitForExit((int)TimeSpan.FromSeconds(15).TotalMilliseconds);
-            }
+            Console.WriteLine("Sleeping in 3 seconds...");
+            Thread.Sleep((int)TimeSpan.FromSeconds(3).TotalMilliseconds);
+            SetSuspendState(false, true, false);
         }
     }
 }

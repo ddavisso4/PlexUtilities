@@ -52,10 +52,19 @@ namespace Ddavisso4.PlexUtilities.Api
                     .Where(s => s.ShowingToRecord.BeginsAt <= DateTimeOffset.UtcNow && s.ShowingToRecord.EndsAt >= DateTimeOffset.UtcNow)
                     .Any();
 
-                recordingScheduleInfo.NextRecordingStartTime = schedules
-                    .Where(s => s.ShowingToRecord.BeginsAt > DateTimeOffset.UtcNow)
-                    .Select(schedule => schedule.ShowingToRecord.BeginsAt)
-                    .Min();
+                var futureRecordingStartDates = schedules
+                    .Where(s => s.BeginsAt > DateTimeOffset.UtcNow)
+                    .Select(schedule => schedule.BeginsAt)
+                    .ToArray();
+
+                if(futureRecordingStartDates.Any())
+                {
+                    recordingScheduleInfo.NextRecordingStartTime = futureRecordingStartDates.Min();
+                }
+                else
+                {
+                    recordingScheduleInfo.NextRecordingStartTime = null;
+                }
 
                 return recordingScheduleInfo;
             }
