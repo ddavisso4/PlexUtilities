@@ -1,2 +1,2 @@
 # PlexUtilities
-A set of command line utilities for managing Plex Media Server.
+A set of command line utilities for Plex Media Server.

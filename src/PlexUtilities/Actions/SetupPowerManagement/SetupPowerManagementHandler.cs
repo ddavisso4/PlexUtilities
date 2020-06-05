@@ -1,26 +1,26 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
-using Ddavisso4.PlexUtilities.Args;
+using Ddavisso4.PlexUtilities.Actions.TrySleep;
 using Ddavisso4.PlexUtilities.Configuration;
 using Microsoft.Win32.TaskScheduler;
 
-namespace Ddavisso4.PlexUtilities.Utilities.PowerManagement
+namespace Ddavisso4.PlexUtilities.Actions.SetupPowerManagement
 {
-    internal class PowerManagementTaskScheduler
+    public class SetupPowerManagementHandler : IActionHandler<SetupPowerManagementActionOptions>
     {
         private readonly string _taskSchedulerFolderName;
         private readonly string _sleepTaskName;
         private readonly string _wakeTaskName;
 
-        internal PowerManagementTaskScheduler(PlexUtilitiesConfiguration configuration)
+        internal SetupPowerManagementHandler(PlexUtilitiesConfiguration configuration)
         {
             _taskSchedulerFolderName = configuration.PowerManagementConfiguration.TaskSchedulerFolderName;
             _sleepTaskName = configuration.PowerManagementConfiguration.SleepTaskName;
             _wakeTaskName = configuration.PowerManagementConfiguration.WakeTaskName;
         }
 
-        internal void SetupPowerManagementTasks()
+        public void Handle(SetupPowerManagementActionOptions options)
         {
             using (TaskService taskService = new TaskService())
             {
@@ -45,7 +45,7 @@ namespace Ddavisso4.PlexUtilities.Utilities.PowerManagement
 
             taskDefinition.Triggers.Add(new IdleTrigger());
 
-            taskDefinition.Actions.Add(new ExecAction(Assembly.GetExecutingAssembly().Location, PrimaryAction.TrySleep.ToString()));
+            taskDefinition.Actions.Add(new ExecAction(Assembly.GetExecutingAssembly().Location, TrySleepActionOptions.ActionName));
 
             taskDefinition.Principal.LogonType = TaskLogonType.S4U;
             taskDefinition.Principal.RunLevel = TaskRunLevel.Highest;

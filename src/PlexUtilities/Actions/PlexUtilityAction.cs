@@ -1,6 +1,6 @@
-﻿namespace Ddavisso4.PlexUtilities.Args
+﻿namespace Ddavisso4.PlexUtilities.Actions
 {
-    internal enum PrimaryAction
+    internal enum PlexUtilityAction
     {
         SetupPowerManagement = 1,
         TrySleep = 2,

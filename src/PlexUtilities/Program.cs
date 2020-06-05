@@ -1,43 +1,58 @@
-﻿using System;
-using Ddavisso4.PlexUtilities.Args;
-using Ddavisso4.PlexUtilities.Configuration;
-using Ddavisso4.PlexUtilities.Utilities;
-using Ddavisso4.PlexUtilities.Utilities.PowerManagement;
+﻿using System.Reflection;
+using Autofac;
+using CommandLine;
+using Ddavisso4.PlexUtilities.Actions;
+using Ddavisso4.PlexUtilities.Actions.TrySleep;
 
 namespace Ddavisso4.PlexUtilities
 {
-    internal class Program
-    {
-        private const string _version = "0.3.0";
+    class Program
+    {        
+        static void Main(string[] args)
+        {   
+            var builder = new ContainerBuilder();
+            builder
+                .RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                .Where(t => t.IsClosedTypeOf)
 
-        internal static void Main(string[] args)
-        {
-            PlexUtilitiesArgs plexUtilitiesArgs = new ArgParser(args).ParseArgs();
-            PlexUtilitiesConfiguration configuration = ConfigurationLoader.LoadConfiguration();
+            var container = builder.Build();
+            container.Resolve<IActionHandler<TrySleepActionOptions>>();
 
-            if (plexUtilitiesArgs == null)
-            {
-                Console.WriteLine($"Plex Utilities v{_version}");
-            }
+            var types = LoadVerbs();			
 
-            RunPrimaryAction(plexUtilitiesArgs, configuration);
+            Parser.Default.ParseArguments(args, types)
+                .WithParsed(Run)
+                .WithNotParsed(HandleErrors);
+
+            // PlexUtilitiesArgs plexUtilitiesArgs = ArgParser.ParseArgs(args);
+            // PlexUtilitiesConfiguration configuration = ConfigurationLoader.LoadConfiguration();
+
+            // if (plexUtilitiesArgs == null)
+            // {
+            //     return;
+            // }
+
+            // switch (plexUtilitiesArgs.PrimaryAction)
+            // {
+            //     case PrimaryAction.SetupPowerManagement:
+            //         new PowerManagementTaskScheduler(configuration)
+            //             .SetupPowerManagementTasks();
+            //         break;
+            //     case PrimaryAction.TrySleep:
+            //         new SleepChecker(configuration)
+            //             .CheckIfShouldSleep();
+            //         break;
+            // }
         }
 
-        private static void RunPrimaryAction(PlexUtilitiesArgs plexUtilitiesArgs, PlexUtilitiesConfiguration configuration)
+        private static void HandleErrors()
         {
-            // TODO: GetConfig, SetConfig
-            switch (plexUtilitiesArgs.PrimaryAction)
-            {
-                case PrimaryAction.SetupPowerManagement:
-                    new PowerManagementTaskScheduler(configuration).SetupPowerManagementTasks();
-                    break;
-                case PrimaryAction.TrySleep:
-                    new TrySleeper(configuration).CheckIfShouldSleep();
-                    break;
-                case PrimaryAction.DownloadAlbum:
-                    new AlbumDownloader(configuration, plexUtilitiesArgs.DownloadAlbumArgs).DownloadAlbum();
-                    break;
-            }
+            
+        }
+
+        private static void Run()
+        {
+             
         }
     }
 }

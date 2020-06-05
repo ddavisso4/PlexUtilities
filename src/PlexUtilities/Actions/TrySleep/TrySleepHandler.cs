@@ -1,13 +1,12 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Ddavisso4.PlexUtilities.Api;
-using Ddavisso4.PlexUtilities.Configuration;
 using Microsoft.Win32.TaskScheduler;
 
-namespace Ddavisso4.PlexUtilities.Utilities.PowerManagement
+namespace Ddavisso4.PlexUtilities.Actions.TrySleep
 {
-    internal class TrySleeper
+    internal class TrySleepHandler : IActionHandler<TrySleepActionOptions>
     {
         private readonly RecordingScheduleApiClient _recordingScheduleApiClient;
         private readonly BackgroundSessionsApiClient _backgroundSessionsApiClient;
@@ -16,21 +15,24 @@ namespace Ddavisso4.PlexUtilities.Utilities.PowerManagement
         private readonly int _minutesBeforeRecordingAllowSleep;
         private readonly int _minutesBeforeRecordingToWake;
 
-        public TrySleeper(PlexUtilitiesConfiguration configuration)
+        public TrySleepHandler(
+            RecordingScheduleApiClient recordingScheduleApiClient,
+            BackgroundSessionsApiClient backgroundSessionsApiClient,
+            SessionsApiClient sessionsApiClient)
         {
-            _recordingScheduleApiClient = new RecordingScheduleApiClient(configuration);
-            _backgroundSessionsApiClient = new BackgroundSessionsApiClient(configuration);
-            _sessionsApiClient = new SessionsApiClient(configuration);
+            _recordingScheduleApiClient = recordingScheduleApiClient;
+            _backgroundSessionsApiClient = backgroundSessionsApiClient;
+            _sessionsApiClient = sessionsApiClient;
 
-            _wakeTaskName = configuration.PowerManagementConfiguration.WakeTaskName;
-            _minutesBeforeRecordingAllowSleep = configuration.PowerManagementConfiguration.MinutesBeforeRecordingAllowSleep;
-            _minutesBeforeRecordingToWake = configuration.PowerManagementConfiguration.MinutesBeforeRecordingToWake;
+            // _wakeTaskName = configuration.PowerManagementConfiguration.WakeTaskName;
+            // _minutesBeforeRecordingAllowSleep = configuration.PowerManagementConfiguration.MinutesBeforeRecordingAllowSleep;
+            // _minutesBeforeRecordingToWake = configuration.PowerManagementConfiguration.MinutesBeforeRecordingToWake;
         }
 
         [DllImport("Powrprof.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern bool SetSuspendState(bool hiberate, bool forceCritical, bool disableWakeEvent);
 
-        internal void CheckIfShouldSleep()
+        public void Handle(TrySleepActionOptions options)
         {
             RecordingScheduleApiClient.RecordingScheduleInfo scheduleInfo = _recordingScheduleApiClient.GetNextRecordingStartTime();
             bool areThereActiveBackgroundSessions = _backgroundSessionsApiClient.AreThereActiveBackgroundSessions();
